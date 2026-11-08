@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}QR Scanner{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>QR Attendance Scanner</h1><p>First scan records <b>Time In</b>; the next scan records <b>Time Out</b>. Time in at or after {{ school.late_after }} is marked Late.</p></div><a class="btn" href="{{ url_for('attendance') }}">View records</a></div>
+<div class="scan-grid">
+<div class="card" id="scanner" {% if secure_url %}data-secure-url="{{ secure_url }}"{% endif %}>
+  <div class="notice" id="cam-notice" role="alert" hidden></div>
+  <div id="reader"><span class="reader-idle">Camera is off<small>Press “Start camera”</small></span></div>
+  <div class="cam-bar" id="cam-bar" hidden>
+    <label class="cam-pick">Camera<select id="cam-select" aria-label="Choose camera"></select></label>
+    <button type="button" class="btn sm" id="torch-btn" hidden>Flashlight</button>
+  </div>
+  <div class="actions mt">
+    <button type="button" class="btn primary" id="scan-start">Start camera</button>
+    <button type="button" class="btn" id="scan-stop" hidden>Stop camera</button>
+    <button type="button" class="btn" id="photo-btn" title="Works even without a live camera: take or choose a photo of the QR code">Scan from photo</button>
+    <input type="file" id="photo-input" accept="image/*" capture="environment" hidden>
+  </div>
+  <div id="file-reader" hidden></div>
+  <label class="check voice-opt"><input type="checkbox" id="voice-on" checked> Voice announcements (“Welcome…” / “Thank you…”)</label>
+  <div class="scan-result" id="scan-result" aria-live="polite"><b>Ready</b>Scan a student's QR code.</div>
+  <form id="manual-form" class="filters mt"><label>USB / Bluetooth scanner or type the LRN<input id="manual-code" autocomplete="off" inputmode="numeric" placeholder="Scan or enter LRN, then press Enter"></label><button class="btn">Record</button></form></div>
+<div class="card"><div class="card-head"><h2>This session</h2><span class="badge info"><span id="scan-count">0</span> scans</span></div><ul class="list" id="scan-log"><li class="empty">Scans will appear here.</li></ul></div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js" referrerpolicy="no-referrer" defer></script>{% endblock %}

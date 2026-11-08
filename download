@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.py[cod]
+instance/*.db
+instance/secret.key
+venv/
+.venv/
+
+instance/certs/

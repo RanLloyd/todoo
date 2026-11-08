@@ -1,0 +1,4 @@
+{% extends 'auth_base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block body %}<div class="auth-card err-page"><img class="auth-logo" src="{{ url_for('static', filename='images/logo.png') }}" alt=""><h1>{{ code }}</h1><h2>{{ title }}</h2><p class="muted">{{ msg }}</p>
+<a class="btn primary" href="{{ url_for('portal') }}">Go to home</a></div>{% endblock %}

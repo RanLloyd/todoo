@@ -1,0 +1,10 @@
+{% extends 'auth_base.html' %}{% from '_macros.html' import icon %}
+{% block title %}Welcome{% endblock %}{% block wrapcls %}portal{% endblock %}
+{% block body %}
+<div class="portal-head"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Pila Senior High School crest">
+<h1>Pila Senior High School</h1><p>Attendance Monitoring System · Choose how you want to sign in</p></div>
+<div class="role-cards">
+  <a class="role" href="{{ url_for('student_login') }}" style="--c:var(--green)"><div class="ico">{{ icon('student') }}</div><b>Student</b><span>View your QR code, attendance, quizzes and grades</span><br><span class="go">Student sign in →</span></a>
+  <a class="role" href="{{ url_for('teacher_login') }}" style="--c:var(--crimson)"><div class="ico">{{ icon('teacher') }}</div><b>Teacher</b><span>Scan attendance, manage students, quizzes and reports</span><br><span class="go">Teacher sign in →</span></a>
+</div>
+{% endblock %}

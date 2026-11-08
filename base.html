@@ -1,0 +1,51 @@
+{% from '_macros.html' import icon, flashes %}<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="csrf" content="{{ csrf }}"><meta name="theme-color" content="#5e0a0e">
+<title>{% block title %}Dashboard{% endblock %} · Pila SHS</title>
+<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32.png') }}">
+<link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='images/favicon-192.png') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head><body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <a class="brand" href="{{ url_for('dashboard') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Pila SHS crest"><div><b>Pila Senior High School</b><span>Attendance &amp; Grades</span></div></a>
+  {% set ep = nav_endpoint or '' %}
+  <nav aria-label="Main">
+  {% if is_staff %}
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if ep=='dashboard' }}">{{ icon('home') }}Dashboard</a>
+    <div class="group">Attendance</div>
+    <a href="{{ url_for('scan_page') }}" class="{{ 'active' if ep=='scan_page' }}">{{ icon('scan') }}QR Scanner</a>
+    <a href="{{ url_for('attendance') }}" class="{{ 'active' if ep=='attendance' }}">{{ icon('cal') }}Attendance Records</a>
+    <div class="group">Class</div>
+    <a href="{{ url_for('students') }}" class="{{ 'active' if ep.startswith('student') or ep=='qr_cards' }}">{{ icon('users') }}Students</a>
+    <a href="{{ url_for('recitation') }}" class="{{ 'active' if ep=='recitation' }}">{{ icon('mic') }}Recitation</a>
+    <a href="{{ url_for('assessments') }}" class="{{ 'active' if ep.startswith('assessment') }}">{{ icon('quiz') }}Quizzes &amp; Exams</a>
+    <a href="{{ url_for('grades') }}" class="{{ 'active' if ep=='grades' }}">{{ icon('grade') }}Term Grades</a>
+    <div class="group">Admin</div>
+    <a href="{{ url_for('reports') }}" class="{{ 'active' if ep in ('reports',) }}">{{ icon('report') }}Reports &amp; Export</a>
+    <a href="{{ url_for('settings') }}" class="{{ 'active' if ep=='settings' }}">{{ icon('gear') }}Settings</a>
+    {% if user.role=='admin' %}<a href="{{ url_for('accounts') }}" class="{{ 'active' if ep.startswith('account') }}">{{ icon('key') }}Staff Accounts</a>{% endif %}
+  {% else %}
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if ep=='dashboard' }}">{{ icon('home') }}My Dashboard</a>
+    <a href="{{ url_for('my_qr') }}" class="{{ 'active' if ep=='my_qr' }}">{{ icon('qr') }}My QR Code</a>
+    <a href="{{ url_for('my_attendance') }}" class="{{ 'active' if ep=='my_attendance' }}">{{ icon('cal') }}My Attendance</a>
+    <a href="{{ url_for('my_assessments') }}" class="{{ 'active' if ep in ('my_assessments','take_assessment') }}">{{ icon('quiz') }}Quizzes &amp; Exams</a>
+    <a href="{{ url_for('my_grades') }}" class="{{ 'active' if ep=='my_grades' }}">{{ icon('grade') }}My Grades</a>
+  {% endif %}
+  </nav>
+  <div class="side-foot"><b>{{ user.full_name }}</b><span>{{ 'Administrator' if user.role=='admin' else user.role }}</span><br>
+    <a class="link" href="{{ url_for('change_password') }}">Change password</a>
+    <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost-light sm">Sign out</button></form></div>
+</aside>
+<div class="scrim"></div>
+<div class="main">
+  <header class="topbar"><button class="menu-btn" data-nav-toggle aria-label="Open menu" aria-expanded="false">☰</button><b>Pila Senior High School</b><img src="{{ url_for('static', filename='images/logo.png') }}" alt=""></header>
+  <main class="content">{{ flashes() }}{% block content %}{% endblock %}</main>
+</div></div>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% block scripts %}{% endblock %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body></html>

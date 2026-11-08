@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Dashboard</h1><p>{{ today.strftime('%A, %B %d, %Y') }} · <span class="live" id="live" aria-live="polite"><span id="live-text">Live · updated</span> <span data-bind="stamp">—</span></span></p></div>
+<form method="get" class="actions no-print"><label class="small">Term <select name="term" data-autosubmit>{% for t in terms %}<option value="{{ t.id }}" {{ 'selected' if t.id==term.id }}>{{ t.name }}</option>{% endfor %}</select></label>
+<a class="btn gold" href="{{ url_for('scan_page') }}">Scan attendance</a></div></form>
+
+<div class="grid g4">
+  <div class="card kpi green"><small>Present today</small><strong data-bind="present">0</strong><span>of <span data-bind="total">0</span> students · <span data-bind="rate">0</span>% attendance</span></div>
+  <div class="card kpi gold"><small>Late today</small><strong data-bind="late">0</strong><span>after {{ school.late_after }}</span></div>
+  <div class="card kpi orange"><small>Absent / not yet in</small><strong data-bind="absent">0</strong><span><span data-bind="timed_out">0</span> already timed out</span></div>
+  <div class="card kpi blue"><small>Class days · {{ term.name }}</small><strong data-bind="class_days">0</strong><span>average attendance <span data-bind="avg_att">—</span></span></div>
+</div>
+
+<div class="grid g-main mt">
+  <div class="card"><div class="card-head"><h2>Attendance trend</h2><span class="muted small">Daily attendance % · {{ term.name }}</span></div><div id="c-trend"></div></div>
+  <div class="card"><h2>Attendance breakdown</h2><div class="donut-wrap"><div id="c-split"></div></div><div class="chart-legend" id="c-split-legend"></div></div>
+</div>
+
+<div class="grid g4 mt">
+  <div class="card kpi"><small>Average term grade</small><strong data-bind="avg_grade">—</strong><span>passing mark {{ payload.passing|int }}</span></div>
+  <div class="card kpi green"><small>Passing rate</small><strong data-bind="pass_rate">—</strong><span>students at or above passing</span></div>
+  <div class="card kpi orange"><small>Need attention</small><strong data-bind="risk">0</strong><span>low attendance or grade</span></div>
+  <div class="card kpi gold"><small>Excused today</small><strong data-bind="excused">0</strong><span>counted as present</span></div>
+</div>
+
+<div class="grid g-main mt">
+  <div class="card"><div class="card-head"><h2>Student performance</h2><span class="muted small">Term grade per student · dashed line = passing</span></div><div id="c-perf"></div></div>
+  <div class="card"><h2>Grade distribution</h2><div id="c-bins"></div></div>
+</div>
+
+<div class="grid g3 mt">
+  <div class="card"><h2>Recent scans</h2><ul class="list" id="feed"></ul></div>
+  <div class="card"><h2>Needs attention</h2><ul class="list" id="risk-list"></ul></div>
+  <div class="card"><h2>Top performers</h2><ul class="list" id="top-list"></ul></div>
+</div>
+<div class="card mt"><h2>Quiz &amp; exam averages</h2><div id="c-assess"></div></div>
+<script type="application/json" id="payload">{{ payload|tojson }}</script>
+{% endblock %}

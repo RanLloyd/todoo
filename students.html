@@ -1,0 +1,20 @@
+{% extends 'base.html' %}{% from '_macros.html' import badge %}
+{% block title %}Students{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Students</h1><p>{{ rows|length }} learner{{ '' if rows|length==1 else 's' }}{% if section %} in {{ section }}{% endif %}</p></div>
+<div class="actions"><a class="btn" href="{{ url_for('qr_cards', q=q, section=section) }}">Print QR cards</a><a class="btn primary" href="{{ url_for('student_new') }}">+ Add student</a></div></div>
+<div class="card">
+<form class="filters" method="get"><label>Search<input name="q" value="{{ q }}" placeholder="Name or LRN"></label>
+<label>Section<select name="section" data-autosubmit><option value="">All sections</option>{% for s in sections %}<option {{ 'selected' if s==section }}>{{ s }}</option>{% endfor %}</select></label><button class="btn">Search</button></form>
+<div class="table-wrap mt"><table class="rtable"><thead><tr><th>Student</th><th>LRN</th><th>Sex</th><th>Section</th><th>Status</th><th></th></tr></thead><tbody>
+{% for s in rows %}<tr class="{{ '' if s.active else 'inactive' }}">
+<td class="name"><b>{{ s.last_name }}, {{ s.first_name }} {{ s.middle_name[:1] ~ '.' if s.middle_name }}</b><span>{{ s.address or '' }}</span></td>
+<td data-label="LRN" class="nowrap">{{ s.lrn }}</td><td data-label="Sex">{{ s.sex or '—' }}</td><td data-label="Section">{{ s.grade_level }}-{{ s.section }} · {{ s.strand }}</td>
+<td data-label="Status">{{ badge('Active' if s.active else 'Inactive') }}{% if s.must_change %} <span class="muted small">new</span>{% endif %}</td>
+<td class="nolabel right"><a class="btn sm" href="{{ url_for('student_edit', sid=s.id) }}">Edit</a>
+<form class="inline" method="post" action="{{ url_for('student_reset', sid=s.id) }}" data-confirm="Reset this student's password to their LRN?"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn sm">Reset password</button></form>
+<form class="inline" method="post" action="{{ url_for('student_toggle', sid=s.id) }}" data-confirm="{{ 'Deactivate' if s.active else 'Activate' }} this account?"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn sm {{ 'danger' if s.active }}">{{ 'Deactivate' if s.active else 'Activate' }}</button></form></td></tr>
+{% else %}<tr><td colspan="6" class="empty">No students match.</td></tr>{% endfor %}</tbody></table></div></div>
+<div class="card mt"><h2>Import students</h2><p class="muted small">Upload a CSV with the columns <code>lrn, last_name, first_name, middle_name, sex, birthdate, address, section, grade_level, strand, school_year</code> (see <code>data/students_HUMSS11_Magalang.csv</code>). New accounts sign in with their LRN as the first password.</p>
+<form method="post" action="{{ url_for('students_import') }}" enctype="multipart/form-data" class="filters"><input type="hidden" name="csrf" value="{{ csrf }}"><label>CSV file<input type="file" name="file" accept=".csv" required></label><button class="btn">Import</button></form></div>
+{% endblock %}

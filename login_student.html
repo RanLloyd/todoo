@@ -1,0 +1,12 @@
+{% extends 'auth_base.html' %}{% from '_macros.html' import flashes %}
+{% block title %}Student sign in{% endblock %}
+{% block body %}
+<div class="auth-card" style="border-top-color:var(--green)"><img class="auth-logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="Pila SHS crest">
+<h1>Student Sign In</h1><p class="sub">Use your LRN to see your attendance, scores and grades</p>
+{{ flashes() }}
+<form method="post" autocomplete="on"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>LRN (Learner Reference Number)<input name="username" inputmode="numeric" autocomplete="username" required autofocus></label>
+<label>Password<span class="pw"><input id="pw" name="password" type="password" autocomplete="current-password" required><button type="button" data-toggle-pw="#pw">Show</button></span></label>
+<button class="btn primary block" style="background:var(--green);border-color:var(--green)">Sign in</button></form>
+<p class="auth-foot">First time? Your password is your LRN, and you will be asked to choose a new one.<br><a href="{{ url_for('portal') }}">← Back</a> · <a href="{{ url_for('teacher_login') }}">I am a teacher</a></p></div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% macro icon(n) -%}
+<svg viewBox="0 0 24 24" aria-hidden="true">{% if n=='home' %}<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>
+{% elif n=='cal' %}<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="M8 15l2.5 2.5L16 13"/>
+{% elif n=='scan' %}<path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3"/><path d="M4 12h16"/>
+{% elif n=='users' %}<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 010 7M18 14.8c2 .7 3.2 2.3 3.5 5.2"/>
+{% elif n=='mic' %}<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>
+{% elif n=='quiz' %}<path d="M5 3h11l3 3v15H5z"/><path d="M9 11h6M9 15h6M9 7h3"/>
+{% elif n=='grade' %}<path d="M3 20V10M9 20V4M15 20v-7M21 20V8"/>
+{% elif n=='report' %}<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>
+{% elif n=='gear' %}<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 01-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 010-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 014 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 010 4h-.1a1.7 1.7 0 00-1.5 1z"/>
+{% elif n=='key' %}<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>
+{% elif n=='qr' %}<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20h1"/>
+{% elif n=='teacher' %}<path d="M2 8l10-5 10 5-10 5z"/><path d="M6 10.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-5.5M22 8v6"/>
+{% elif n=='student' %}<circle cx="12" cy="7" r="4"/><path d="M4 21c.7-4.5 4-7 8-7s7.3 2.5 8 7"/>
+{% endif %}</svg>
+{%- endmacro %}
+{% macro flashes() %}{% with m = get_flashed_messages(with_categories=true) %}{% for c, t in m %}<div class="flash {{ c }}" role="alert">{{ t }}</div>{% endfor %}{% endwith %}{% endmacro %}
+{% macro badge(s) %}<span class="badge {{ s|lower }}">{{ s }}</span>{% endmacro %}
+{% macro csrf_field() %}<input type="hidden" name="csrf" value="{{ csrf }}">{% endmacro %}

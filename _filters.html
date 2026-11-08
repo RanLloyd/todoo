@@ -1,0 +1,7 @@
+{# period filter shared by attendance + reports #}
+<form class="filters no-print" method="get" action="{{ action }}">
+<label>View by<select name="period" id="period"><option value="daily" {{ 'selected' if period=='daily' }}>Daily</option><option value="weekly" {{ 'selected' if period=='weekly' }}>Weekly</option><option value="monthly" {{ 'selected' if period=='monthly' }}>Monthly</option><option value="term" {{ 'selected' if period=='term' }}>Term</option><option value="custom" {{ 'selected' if period=='custom' }}>Custom date range</option></select></label>
+<label data-show="daily weekly monthly">Date<input type="date" name="date" value="{{ anchor }}"></label>
+<label data-show="term">Term<select name="term">{% for t in terms %}<option value="{{ t.id }}" {{ 'selected' if t.id==term_id }}>{{ t.name }}</option>{% endfor %}</select></label>
+<label data-show="custom">From<input type="date" name="start" value="{{ start }}"></label><label data-show="custom">To<input type="date" name="end" value="{{ end }}"></label>
+{% if show_q %}<label>Search<input name="q" value="{{ q }}" placeholder="Name or LRN"></label>{% endif %}<button class="btn primary">Apply</button></form>

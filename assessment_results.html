@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Results{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ a.title }}</h1><p>{{ a.kind|capitalize }} · {{ a.term_name or 'No term' }} · {{ done }} of {{ rows|length }} submitted{% if avg is not none %} · class average <b>{{ avg|num(1) }}%</b>{% endif %}</p></div>
+<div class="actions"><a class="btn" href="{{ url_for('assessment_results', aid=a.id, csv=1) }}">Export CSV</a><a class="btn" href="{{ url_for('assessments') }}">← Back</a></div></div>
+<div class="card"><div class="table-wrap"><table class="rtable"><thead><tr><th>Student</th><th class="num">Score</th><th class="num">Percent</th><th>Submitted</th></tr></thead><tbody>
+{% for r in rows %}<tr><td class="name"><b>{{ r.last_name }}, {{ r.first_name }}</b><span>{{ r.lrn }}</span></td>
+{% if r.submitted_at %}<td class="num" data-label="Score">{{ r.score|num }} / {{ r.total|num }}</td><td class="num" data-label="Percent"><b>{{ (r.score*100/r.total)|num(1) if r.total else '—' }}%</b></td><td data-label="Submitted">{{ r.submitted_at|dt }}</td>
+{% else %}<td class="num" data-label="Score">—</td><td class="num" data-label="Percent">—</td><td data-label="Submitted"><span class="muted">Not taken</span></td>{% endif %}</tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

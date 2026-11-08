@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% from '_macros.html' import badge %}
+{% block title %}Quizzes &amp; Exams{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Quizzes &amp; Examinations</h1><p>Scores are calculated automatically when students submit.</p></div><a class="btn primary" href="{{ url_for('assessment_form') }}">+ Create quiz / exam</a></div>
+<div class="card"><div class="table-wrap"><table class="rtable"><thead><tr><th>Title</th><th>Type</th><th>Term</th><th>Questions</th><th>Due</th><th>Taken</th><th>Average</th><th>Status</th><th></th></tr></thead><tbody>
+{% for a in rows %}<tr><td class="name"><b>{{ a.title }}</b><span>{{ a.time_limit ~ ' min limit' if a.time_limit else 'No time limit' }}</span></td><td data-label="Type">{{ badge(a.kind) }}</td><td data-label="Term">{{ a.term_name or '—' }}</td>
+<td data-label="Questions">{{ a.nq }} · {{ a.pts|num }} pts</td><td data-label="Due">{{ a.due_at|dt if a.due_at else '—' }}</td><td data-label="Taken">{{ a.taken }}</td><td data-label="Average">{{ (a.avg|num(0) ~ '%') if a.avg is not none else '—' }}</td>
+<td data-label="Status">{{ badge('Active' if a.published else 'Draft') }}</td>
+<td class="nolabel right"><a class="btn sm" href="{{ url_for('assessment_results', aid=a.id) }}">Results</a> <a class="btn sm" href="{{ url_for('assessment_form', aid=a.id) }}">Edit</a>
+<form class="inline" method="post" action="{{ url_for('assessment_publish', aid=a.id) }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn sm">{{ 'Unpublish' if a.published else 'Publish' }}</button></form>
+<form class="inline" method="post" action="{{ url_for('assessment_delete', aid=a.id) }}" data-confirm="Delete this and all student attempts?"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn sm danger">Delete</button></form></td></tr>
+{% else %}<tr><td colspan="9" class="empty">No quizzes or exams yet. Create the first one.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

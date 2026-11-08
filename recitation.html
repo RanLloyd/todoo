@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Recitation{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Recitation Scores</h1><p>Record oral participation. The term average counts toward the grade.</p></div></div>
+<div class="grid g-main"><div class="card"><form method="post"><input type="hidden" name="csrf" value="{{ csrf }}">
+<div class="filters"><label>Date<input type="date" name="day" value="{{ day }}" required></label><label>Topic (optional)<input name="topic" value="{{ topic }}" maxlength="80"></label><label>Perfect score<input type="number" name="max_score" min="1" step="0.5" value="{{ maxs|num }}" required></label></div>
+<div class="table-wrap mt"><table class="rtable"><thead><tr><th>Student</th><th style="width:140px">Score</th></tr></thead><tbody>
+{% for s in rows %}<tr><td class="name"><b>{{ s.last_name }}, {{ s.first_name }}</b><span>{{ s.lrn }}</span></td><td data-label="Score"><input type="number" name="score_{{ s.id }}" min="0" step="0.5" inputmode="decimal" value="{{ existing[s.id].score|num if s.id in existing }}" aria-label="Score for {{ s.last_name }}"></td></tr>{% endfor %}</tbody></table></div>
+<div class="actions mt"><button class="btn primary">Save scores</button></div></form></div>
+<div class="card"><h2>Recent sessions</h2><ul class="list">{% for r in recent %}<li><span class="who"><b>{{ r.day|dlong }}</b><span class="muted small">{{ r.topic or 'No topic' }} · {{ r.n }} students</span></span><b class="score">{{ r.avg|num(0) }}%</b></li>{% else %}<li class="empty">Nothing recorded yet.</li>{% endfor %}</ul></div></div>
+{% endblock %}

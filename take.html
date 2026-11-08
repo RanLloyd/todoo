@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}{{ a.title }}{% endblock %}
+{% block content %}
+<div style="max-width:760px;margin:0 auto"><h1>{{ a.title }}</h1>{% if a.instructions %}<p class="muted">{{ a.instructions }}</p>{% endif %}
+{% if seconds_left is not none %}<div class="timer" id="timer" data-seconds="{{ seconds_left }}"><span>Time left</span><b id="timer-value">--:--</b></div>{% endif %}
+<form method="post" id="take-form"><input type="hidden" name="csrf" value="{{ csrf }}">
+{% for q in qs %}<div class="card take-q"><b>{{ loop.index }}. {{ q.prompt }}</b> <span class="muted small">({{ q.points|num }} pt{{ '' if q.points==1 else 's' }})</span>
+{% if q.qtype=='mcq' %}{% for c in q.choices %}<label class="opt"><input type="radio" name="q_{{ q.id }}" value="{{ c }}"><span>{{ c }}</span></label>{% endfor %}
+{% elif q.qtype=='tf' %}{% for c in ('True','False') %}<label class="opt"><input type="radio" name="q_{{ q.id }}" value="{{ c }}"><span>{{ c }}</span></label>{% endfor %}
+{% else %}<input name="q_{{ q.id }}" autocomplete="off" placeholder="Type your answer">{% endif %}</div>{% endfor %}
+<button class="btn primary block" data-confirm="Submit your answers? You cannot change them afterwards.">Submit answers</button></form></div>
+{% endblock %}

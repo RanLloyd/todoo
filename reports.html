@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Reports &amp; Export</h1><p>Build a report for a term or any date range, then download it as CSV for documentation.</p></div></div>
+<div class="card"><h2>Report period</h2>{% set action = url_for('reports') %}{% set show_q = false %}{% include '_filters.html' %}
+<p class="muted small mt">Selected: <b>{{ label }}</b> ({{ start }} to {{ end }}). Grade, quiz and recitation reports use the term chosen under “Term”.</p></div>
+{% set qs = {'period': period, 'date': anchor, 'term': term_id, 'start': start|string, 'end': end|string} %}
+<div class="grid g3 mt">
+<div class="card"><h2>Attendance summary</h2><p class="muted small">Present, late, excused, absent and attendance % per student for the selected period.</p><a class="btn primary" href="{{ url_for('report_export', kind='attendance_summary', **qs) }}">Download CSV</a></div>
+<div class="card"><h2>Attendance log</h2><p class="muted small">Every Time In / Time Out record in the selected period.</p><a class="btn primary" href="{{ url_for('report_export', kind='attendance_log', **qs) }}">Download CSV</a></div>
+<div class="card"><h2>Term grades</h2><p class="muted small">Attendance, recitation, quiz, exam and final grade for {{ term.name }}.</p><a class="btn primary" href="{{ url_for('report_export', kind='grades', term=term.id) }}">Download CSV</a> <a class="btn" href="{{ url_for('grades', term=term.id) }}">View</a></div>
+<div class="card"><h2>Quiz &amp; exam results</h2><p class="muted small">All submitted scores for {{ term.name }}.</p><a class="btn primary" href="{{ url_for('report_export', kind='assessments', term=term.id) }}">Download CSV</a></div>
+<div class="card"><h2>Recitation scores</h2><p class="muted small">Recitation entries within {{ term.name }}.</p><a class="btn primary" href="{{ url_for('report_export', kind='recitation', term=term.id) }}">Download CSV</a></div>
+<div class="card"><h2>Student masterlist</h2><p class="muted small">LRN, name, sex, birthdate, address and section.</p><a class="btn primary" href="{{ url_for('report_export', kind='students') }}">Download CSV</a></div></div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}{% from '_macros.html' import badge %}
+{% block title %}Attendance{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Attendance Records</h1><p>{{ label }} · {{ days }} class day{{ '' if days==1 else 's' }}</p></div>
+<div class="actions no-print"><a class="btn" href="{{ url_for('attendance_export', period=period, date=anchor, term=term_id, start=start, end=end, kind='summary') }}">Export summary CSV</a>
+<a class="btn" href="{{ url_for('attendance_export', period=period, date=anchor, term=term_id, start=start, end=end, kind='log') }}">Export log CSV</a><button class="btn" data-print>Print</button></div></div>
+<div class="card">{% set action = url_for('attendance') %}{% set show_q = true %}{% include '_filters.html' %}</div>
+<div class="grid g4 mt">
+<div class="card kpi green"><small>Present</small><strong>{{ tot.present }}</strong><span>records in period</span></div>
+<div class="card kpi gold"><small>Late</small><strong>{{ tot.late }}</strong><span>time in after {{ school.late_after }}</span></div>
+<div class="card kpi blue"><small>Excused</small><strong>{{ tot.excused }}</strong><span>counted as present</span></div>
+<div class="card kpi orange"><small>Absent</small><strong>{{ tot.absent }}</strong><span>class days without a scan</span></div></div>
+{% if days > 1 %}<div class="card mt"><h2>Daily attendance %</h2><div id="c-att-trend"></div></div><script type="application/json" id="series">{{ series|tojson }}</script>{% endif %}
+
+<div class="card mt"><h2>Per-student summary</h2>
+<div class="table-wrap"><table class="rtable"><thead><tr><th>Student</th><th class="num">Present</th><th class="num">Late</th><th class="num">Excused</th><th class="num">Absent</th><th>Attendance</th></tr></thead><tbody>
+{% for r in rows %}<tr><td class="name"><b>{{ r.st.last_name }}, {{ r.st.first_name }}</b><span>{{ r.st.lrn }}</span></td>
+<td class="num" data-label="Present">{{ r.present }}</td><td class="num" data-label="Late">{{ r.late }}</td><td class="num" data-label="Excused">{{ r.excused }}</td><td class="num" data-label="Absent">{{ r.absent }}</td>
+<td data-label="Attendance" style="min-width:140px">{% if r.rate is none %}<span class="muted">No class days</span>{% else %}<b>{{ r.rate|num }}%</b><div class="bar {{ 'bad' if r.rate<75 else 'warn' if r.rate<90 }}"><i style="width:{{ r.rate }}%"></i></div>{% endif %}</td></tr>
+{% else %}<tr><td colspan="6" class="empty">No students found.</td></tr>{% endfor %}</tbody></table></div></div>
+
+{% if detail %}<div class="card mt"><h2>Daily log</h2>
+<div class="table-wrap"><table class="rtable"><thead><tr><th>Date</th><th>Student</th><th>Status</th><th>Time in</th><th>Time out</th><th>Source</th><th class="no-print"></th></tr></thead><tbody>
+{% for d in detail %}<tr><td data-label="Date" class="nowrap">{{ d.day|dlong }}</td><td class="name"><b>{{ d.last_name }}, {{ d.first_name }}</b><span>{{ d.remarks or '' }}</span></td><td data-label="Status">{{ badge(d.status) }}</td>
+<td data-label="Time in">{{ d.time_in|t12 }}</td><td data-label="Time out">{{ d.time_out|t12 }}</td><td data-label="Source">{{ d.source or 'qr' }}</td>
+<td class="nolabel right no-print"><form class="inline" method="post" action="{{ url_for('attendance_delete', aid=d.id) }}" data-confirm="Delete this record?"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn sm danger">Delete</button></form></td></tr>{% endfor %}</tbody></table></div></div>{% endif %}
+
+{% if period=='daily' %}<div class="card mt no-print"><h2>Mark manually</h2>
+<p class="muted small">For students without a scan on {{ start|string|dlong }}: select them and set a status (for example Absent or Excused).</p>
+<form method="post" action="{{ url_for('attendance_mark') }}"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="day" value="{{ start }}">
+<div class="filters"><label>Status<select name="status">{% for s in statuses %}<option>{{ s }}</option>{% endfor %}</select></label><label>Remarks (optional)<input name="remarks" maxlength="120"></label><button class="btn primary">Apply to selected</button></div>
+<div class="table-wrap mt"><table><thead><tr><th><input type="checkbox" data-check-all=".mk" aria-label="Select all"></th><th>Student without a record</th></tr></thead><tbody>
+{% for s in missing %}<tr><td><input class="mk" type="checkbox" name="student_id" value="{{ s.id }}" aria-label="Select {{ s.last_name }}"></td><td>{{ s.last_name }}, {{ s.first_name }} <span class="muted small">{{ s.lrn }}</span></td></tr>
+{% else %}<tr><td colspan="2" class="empty">Everyone has a record for this day.</td></tr>{% endfor %}</tbody></table></div></form></div>{% endif %}
+{% endblock %}

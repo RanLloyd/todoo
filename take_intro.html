@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}{{ a.title }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:640px;margin:0 auto"><h1>{{ a.title }}</h1><p class="muted">{{ a.kind|capitalize }} · {{ nq }} question{{ '' if nq==1 else 's' }}{% if a.time_limit %} · {{ a.time_limit }} minutes{% endif %} · one attempt</p>
+{% if a.instructions %}<p>{{ a.instructions }}</p>{% endif %}
+{% if a.time_limit %}<div class="flash error">The timer starts when you press Start and cannot be paused. It submits automatically at zero.</div>{% endif %}
+<div class="actions"><a class="btn primary" href="{{ url_for('take_assessment', aid=a.id, start=1) }}">Start now</a><a class="btn" href="{{ url_for('my_assessments') }}">Back</a></div></div>
+{% endblock %}

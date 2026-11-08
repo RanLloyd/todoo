@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% from '_macros.html' import badge %}
+{% block title %}Staff accounts{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Staff Accounts</h1><p>Administrator and teacher accounts. Both sign in from the Teacher page.</p></div></div>
+<div class="grid g-main"><div class="card"><div class="table-wrap"><table class="rtable"><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>
+{% for u in rows %}<tr class="{{ '' if u.active else 'inactive' }}"><td class="name"><b>{{ u.full_name }}</b></td><td data-label="Username">{{ u.username }}</td><td data-label="Role">{{ badge('Administrator' if u.role=='admin' else 'Teacher') }}</td><td data-label="Status">{{ badge('Active' if u.active else 'Inactive') }}</td>
+<td class="nolabel right"><form class="inline" method="post" action="{{ url_for('account_reset', uid=u.id) }}" data-confirm="Reset password?"><input type="hidden" name="csrf" value="{{ csrf }}"><input name="password" type="text" minlength="8" placeholder="New temp password" style="width:170px;display:inline-block;min-height:32px;padding:.25rem .5rem" required><button class="btn sm">Reset</button></form>
+{% if u.id != user.id %}<form class="inline" method="post" action="{{ url_for('account_toggle', uid=u.id) }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn sm {{ 'danger' if u.active }}">{{ 'Deactivate' if u.active else 'Activate' }}</button></form>{% endif %}</td></tr>{% endfor %}</tbody></table></div></div>
+<div class="card"><h2>Add account</h2><form method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><div class="form-grid" style="grid-template-columns:1fr">
+<label>Full name<input name="full_name" required></label><label>Username<input name="username" autocapitalize="none" required></label>
+<label>Role<select name="role"><option value="teacher">Teacher</option><option value="admin">Administrator</option></select></label>
+<label>Temporary password<input name="password" minlength="8" required></label></div><button class="btn primary mt">Create account</button></form></div></div>
+{% endblock %}

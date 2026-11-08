@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% from '_macros.html' import badge %}
+{% block title %}My grades{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>My Grades</h1><p>{{ term.name }} · passing {{ passing|num }}</p></div>
+<form method="get" class="actions"><label class="small">Term <select name="term" data-autosubmit>{% for t in terms %}<option value="{{ t.id }}" {{ 'selected' if t.id==term.id }}>{{ t.name }}</option>{% endfor %}</select></label></form></div>
+<div class="card" style="text-align:center"><p class="muted">Overall grade</p><div class="grade-ring">{{ grade.final|num(1) if grade else '—' }}</div>{% if grade and grade.remarks %}{{ badge(grade.remarks) }}{% endif %}</div>
+<div class="card mt"><h2>How it is computed</h2><div class="table-wrap"><table class="rtable"><thead><tr><th>Component</th><th class="num">Weight</th><th class="num">Your score</th></tr></thead><tbody>
+{% for k in ('attendance','recitation','quiz','exam') %}<tr><td class="name"><b>{{ k|capitalize }}</b>{% if k=='attendance' %}<span>{{ summ.present }} present · {{ summ.late }} late · {{ summ.absent }} absent of {{ summ.days }} days</span>{% endif %}</td><td class="num" data-label="Weight">{{ weights[k]|num }}%</td><td class="num" data-label="Your score"><b>{{ grade.components[k]|num(1) if grade else '—' }}</b></td></tr>{% endfor %}</tbody></table></div>
+<p class="muted small">Components that have no records yet are left out and the other weights are rescaled.</p></div>
+{% endblock %}

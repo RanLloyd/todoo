@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Add student' if new else 'Edit student' }}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ 'Add student' if new else 'Edit student' }}</h1>{% if not new %}<p>LRN {{ st.lrn }}</p>{% endif %}</div><a class="btn" href="{{ url_for('students') }}">← Students</a></div>
+<div class="grid g-main">
+<div class="card"><form method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><div class="form-grid">
+<label>LRN (12 digits){% if new %}<input name="lrn" inputmode="numeric" maxlength="12" pattern="[0-9]{12}" value="{{ st.lrn or '' }}" required>{% else %}<input value="{{ st.lrn }}" disabled>{% endif %}</label>
+<label>Last name<input name="last_name" value="{{ st.last_name or '' }}" required></label>
+<label>First name<input name="first_name" value="{{ st.first_name or '' }}" required></label>
+<label>Middle name<input name="middle_name" value="{{ st.middle_name or '' }}"></label>
+<label>Sex<select name="sex"><option value="">—</option><option value="M" {{ 'selected' if st.sex=='M' }}>Male</option><option value="F" {{ 'selected' if st.sex=='F' }}>Female</option></select></label>
+<label>Birthdate<input type="date" name="birthdate" value="{{ st.birthdate or '' }}"></label>
+<label>Grade level<input name="grade_level" value="{{ st.grade_level or '11' }}"></label>
+<label>Strand<input name="strand" value="{{ st.strand or '' }}"></label>
+<label>Section<input name="section" value="{{ st.section or '' }}"></label>
+<label>School year<input name="school_year" value="{{ st.school_year or '' }}"></label>
+<label>Parent / guardian<input name="guardian" value="{{ st.guardian or '' }}"></label>
+<label>Contact number<input name="contact" value="{{ st.contact or '' }}"></label></div>
+<label class="mt">Address<input name="address" value="{{ st.address or '' }}"></label>
+<div class="actions mt"><button class="btn primary">Save</button><a class="btn" href="{{ url_for('students') }}">Cancel</a></div></form></div>
+{% if not new %}<div class="card"><h2>Account</h2><p class="muted">Sign-in username is the LRN.</p>
+<div class="actions"><img src="{{ url_for('qr_image', token=st.qr_token) }}" alt="QR code" width="150" height="150"></div>
+<form method="post" action="{{ url_for('student_reset', sid=st.id) }}" data-confirm="Reset password to the LRN?" class="mt"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn">Reset password</button></form></div>{% endif %}
+</div>
+{% endblock %}

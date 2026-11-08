@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Result{% endblock %}
+{% block content %}
+<div style="max-width:760px;margin:0 auto"><div class="card" style="text-align:center"><p class="muted">{{ a.title }}</p><div class="grade-ring">{{ att.score|num }} / {{ att.total|num }}</div><p><b>{{ (att.score*100/att.total)|num(1) if att.total else 0 }}%</b> · submitted {{ att.submitted_at|dt }}</p><a class="btn" href="{{ url_for('my_assessments') }}">← All quizzes</a></div>
+{% if a.show_answers %}{% for q in qs %}{% set d = detail[q.id] %}<div class="card mt rev {{ 'ok' if d.correct else 'bad' }}"><b>{{ loop.index }}. {{ q.prompt }}</b>
+<p>Your answer: <b>{{ d.given or '(no answer)' }}</b> {{ '✓' if d.correct else '✗' }}</p>{% if not d.correct %}<p class="muted">Correct answer: <b>{{ q.answer.split('|')[0] }}</b></p>{% endif %}</div>{% endfor %}
+{% else %}<p class="muted mt" style="text-align:center">Your teacher chose not to show the correct answers.</p>{% endif %}</div>
+{% endblock %}

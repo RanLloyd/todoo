@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit' if a else 'New' }} quiz / exam{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ 'Edit' if a else 'Create' }} quiz / exam</h1></div><a class="btn" href="{{ url_for('assessments') }}">← Back</a></div>
+{% if attempts %}<div class="flash error">Students have already taken this, so the questions are locked. You can still change the schedule and visibility.</div>{% endif %}
+<form method="post"><input type="hidden" name="csrf" value="{{ csrf }}">
+<div class="card"><h2>Details</h2><div class="form-grid">
+<label>Title<input name="title" value="{{ a.title if a }}" required maxlength="120"></label>
+<label>Type<select name="kind"><option value="quiz" {{ 'selected' if a and a.kind=='quiz' }}>Quiz</option><option value="exam" {{ 'selected' if a and a.kind=='exam' }}>Examination</option></select></label>
+<label>Term<select name="term_id">{% for t in terms %}<option value="{{ t.id }}" {{ 'selected' if (a and a.term_id==t.id) or (not a and t.id==cur_term) }}>{{ t.name }}</option>{% endfor %}</select></label>
+<label>Time limit (minutes, 0 = none)<input type="number" name="time_limit" min="0" value="{{ a.time_limit if a else 0 }}"></label>
+<label>Opens<input type="datetime-local" name="opens_at" value="{{ a.opens_at if a and a.opens_at }}"></label>
+<label>Due / closes<input type="datetime-local" name="due_at" value="{{ a.due_at if a and a.due_at }}"></label></div>
+<label class="mt">Instructions<textarea name="instructions" rows="2">{{ a.instructions if a and a.instructions }}</textarea></label>
+<div class="actions mt"><label class="check"><input type="checkbox" name="published" {{ 'checked' if a and a.published }}> Visible to students</label><label class="check"><input type="checkbox" name="show_answers" {{ 'checked' if not a or a.show_answers }}> Show correct answers after submitting</label></div></div>
+<div class="card mt" id="builder" {{ 'data-locked' if attempts }}><div class="card-head"><h2>Questions</h2><b id="q-summary" class="muted small"></b></div>
+<div id="q-list"></div><input type="hidden" name="questions" id="questions-input">
+{% if not attempts %}<div class="actions"><button type="button" class="btn" data-add="mcq">+ Multiple choice</button><button type="button" class="btn" data-add="tf">+ True / False</button><button type="button" class="btn" data-add="text">+ Identification</button></div>{% endif %}</div>
+<script type="application/json" id="questions-data">{{ questions|tojson }}</script>
+<div class="actions mt"><button class="btn primary">Save</button><a class="btn" href="{{ url_for('assessments') }}">Cancel</a></div></form>
+{% endblock %}

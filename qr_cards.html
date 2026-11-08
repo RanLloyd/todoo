@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}QR cards{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Student QR cards</h1><p>Print and give each learner their card, or let them open it from their account.</p></div><div class="actions"><button class="btn primary" data-print>Print</button><a class="btn" href="{{ url_for('students') }}">← Students</a></div></div>
+<div class="qr-cards">{% for s in rows if s.active %}<div class="qr-card"><div><img class="lg" src="{{ url_for('static', filename='images/logo.png') }}" alt=""><b style="display:inline">Pila SHS</b></div>
+<img class="qr" src="{{ url_for('qr_image', token=s.qr_token) }}" alt="QR for {{ s.first_name }} {{ s.last_name }}" loading="lazy"><b>{{ s.first_name }} {{ s.last_name }}</b><span>{{ s.grade_level }}-{{ s.section }} · LRN {{ s.lrn }}</span></div>{% endfor %}</div>
+{% endblock %}

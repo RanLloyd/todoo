@@ -1,0 +1,15 @@
+{% from '_macros.html' import flashes %}<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="csrf" content="{{ csrf }}"><meta name="theme-color" content="#5e0a0e">
+<title>{% block title %}Sign in{% endblock %} · Pila Senior High School</title>
+<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32.png') }}">
+<link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='images/favicon-192.png') }}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head><body>
+<div class="auth"><div class="auth-wrap {% block wrapcls %}{% endblock %}">{% block body %}{% endblock %}
+<p class="motto">HONORIS · HONESTUS · INTEGRITAS</p></div></div>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body></html>

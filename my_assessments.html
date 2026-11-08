@@ -1,0 +1,14 @@
+{% extends 'base.html' %}{% from '_macros.html' import badge %}
+{% block title %}Quizzes &amp; Exams{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Quizzes &amp; Exams</h1><p>Answer online. Your score is calculated as soon as you submit.</p></div></div>
+<div class="grid g2">{% for a in rows %}{% set closed = a.due_at and a.due_at < stamp %}{% set notyet = a.opens_at and a.opens_at > stamp %}
+<div class="card"><div class="card-head"><h2>{{ a.title }}</h2>{{ badge(a.kind) }}</div>
+<p class="muted small">{{ a.term_name or '' }} · {{ a.nq }} question{{ '' if a.nq==1 else 's' }}{% if a.time_limit %} · {{ a.time_limit }} min{% endif %}{% if a.due_at %} · due {{ a.due_at|dt }}{% endif %}</p>
+{% if a.instructions %}<p>{{ a.instructions }}</p>{% endif %}
+{% if a.submitted_at %}<p><b class="score">{{ a.score|num }} / {{ a.total|num }}</b> <span class="muted">({{ (a.score*100/a.total)|num(0) if a.total else 0 }}%)</span></p><a class="btn" href="{{ url_for('take_assessment', aid=a.id) }}">View result</a>
+{% elif a.started_at %}<a class="btn primary" href="{{ url_for('take_assessment', aid=a.id) }}">Continue</a>
+{% elif closed %}<span class="badge absent">Closed</span>{% elif notyet %}<span class="badge info">Opens {{ a.opens_at|dt }}</span>
+{% elif a.nq == 0 %}<span class="badge draft">No questions yet</span>{% else %}<a class="btn primary" href="{{ url_for('take_assessment', aid=a.id) }}">Start</a>{% endif %}</div>
+{% else %}<div class="card empty">Nothing has been posted yet.</div>{% endfor %}</div>
+{% endblock %}

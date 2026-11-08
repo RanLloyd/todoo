@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% from '_macros.html' import badge %}
+{% block title %}My dashboard{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Hello, {{ st.first_name }}!</h1><p>{{ st.grade_level }}-{{ st.section }} · {{ st.strand }} · LRN {{ st.lrn }}</p></div>
+<form method="get" class="actions"><label class="small">Term <select name="term" data-autosubmit>{% for t in terms %}<option value="{{ t.id }}" {{ 'selected' if t.id==term.id }}>{{ t.name }}</option>{% endfor %}</select></label><a class="btn gold" href="{{ url_for('my_qr') }}">Show my QR</a></div></form>
+<div class="grid g4">
+<div class="card kpi {{ 'green' if rec and rec.status in ('Present','Excused') else 'gold' if rec and rec.status=='Late' else 'orange' }}"><small>Today</small><strong style="font-size:1.5rem">{{ rec.status if rec else 'No scan yet' }}</strong><span>In {{ rec.time_in|t12 if rec else '—' }} · Out {{ rec.time_out|t12 if rec else '—' }}</span></div>
+<div class="card kpi blue"><small>Attendance · {{ term.name }}</small><strong>{{ summ.rate|num(0) ~ '%' if summ.rate is not none else '—' }}</strong><span>{{ summ.present }} present · {{ summ.late }} late · {{ summ.absent }} absent</span></div>
+<div class="card kpi gold"><small>Term grade</small><strong>{{ grade.final|num(1) if grade else '—' }}</strong><span>{{ grade.remarks if grade and grade.remarks else 'No grade yet' }}</span></div>
+<div class="card kpi green"><small>Quizzes to do</small><strong>{{ upcoming|length }}</strong><span><a href="{{ url_for('my_assessments') }}">Open quizzes &amp; exams</a></span></div></div>
+<div class="grid g-main mt"><div class="card"><h2>Recent attendance</h2><div id="c-student-trend"></div><script type="application/json" id="trend">{{ trend|tojson }}</script><p class="muted small">Green = present, gold = late, red = absent.</p></div>
+<div class="card"><h2>Grade breakdown</h2>{% if grade %}<ul class="list">{% for k in ('attendance','recitation','quiz','exam') %}<li><span class="who"><b>{{ k|capitalize }}</b><span class="muted small">{{ weights[k]|num }}% of grade</span></span><b class="score">{{ grade.components[k]|num(1) }}</b></li>{% endfor %}</ul>{% endif %}</div></div>
+<div class="grid g2 mt"><div class="card"><h2>Upcoming</h2><ul class="list">{% for a in upcoming %}<li><span class="who"><b>{{ a.title }}</b><span class="muted small">{{ a.kind|capitalize }}{% if a.due_at %} · due {{ a.due_at|dt }}{% endif %}</span></span><a class="btn sm" href="{{ url_for('take_assessment', aid=a.id) }}">Open</a></li>{% else %}<li class="empty">Nothing due. Great job!</li>{% endfor %}</ul></div>
+<div class="card"><h2>Latest scores</h2><ul class="list">{% for s in scores %}<li><span class="who"><b>{{ s.title }}</b><span class="muted small">{{ s.kind|capitalize }} · {{ s.submitted_at|dt }}</span></span><b class="score">{{ s.score|num }} / {{ s.total|num }}</b></li>{% else %}<li class="empty">No scores yet.</li>{% endfor %}</ul></div></div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% from '_macros.html' import badge %}
+{% block title %}Term grades{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Term Grades</h1><p>{{ term.name }} · attendance {{ weights.attendance|num }}% · recitation {{ weights.recitation|num }}% · quiz {{ weights.quiz|num }}% · exam {{ weights.exam|num }}% · passing {{ passing|num }}</p></div>
+<form method="get" class="actions no-print"><label class="small">Term <select name="term" data-autosubmit>{% for t in terms %}<option value="{{ t.id }}" {{ 'selected' if t.id==term.id }}>{{ t.name }}</option>{% endfor %}</select></label>
+<a class="btn" href="{{ url_for('grades', term=term.id, csv=1) }}">Export CSV</a><button type="button" class="btn" data-print>Print</button></form></div>
+<div class="card"><p class="muted small">A component with no data yet (for example no exam given) is left out and the remaining weights are rescaled. Late counts {{ (school.late_credit|float*100)|num(0) }}% attendance credit. Change weights in Settings.</p>
+<div class="table-wrap"><table class="rtable"><thead><tr><th>Student</th><th class="num">Attendance</th><th class="num">Recitation</th><th class="num">Quiz</th><th class="num">Exam</th><th class="num">Final grade</th><th>Remarks</th></tr></thead><tbody>
+{% for r in rows %}<tr><td class="name"><b>{{ r.student.last_name }}, {{ r.student.first_name }}</b><span>{{ r.student.lrn }}</span></td>
+{% for k in ('attendance','recitation','quiz','exam') %}<td class="num" data-label="{{ k|capitalize }}">{{ r.components[k]|num(1) }}</td>{% endfor %}
+<td class="num" data-label="Final grade"><b class="score">{{ r.final|num(1) }}</b></td><td data-label="Remarks">{% if r.remarks %}{{ badge(r.remarks) }}{% else %}<span class="muted">No data</span>{% endif %}</td></tr>
+{% else %}<tr><td colspan="7" class="empty">No students.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

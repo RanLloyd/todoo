@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}My QR{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>My QR Code</h1><p>Show this to your teacher’s scanner when you arrive (Time In) and when you leave (Time Out).</p></div></div>
+<div class="card qr-box"><img src="{{ url_for('qr_image', token=st.qr_token) }}" alt="Your attendance QR code" width="300" height="300"><h2 class="mt">{{ st.first_name }} {{ st.last_name }}</h2><p class="muted">LRN {{ st.lrn }} · {{ st.grade_level }}-{{ st.section }}</p>
+<p class="small muted">Keep your QR private. Anyone who has it could scan in as you.</p><a class="btn" href="{{ url_for('qr_image', token=st.qr_token) }}" download="my-qr.png">Download image</a></div>
+{% endblock %}
